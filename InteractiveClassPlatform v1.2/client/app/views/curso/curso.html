@@ -1,0 +1,87 @@
+<template name="curso">
+<div class="container">
+    <div class="row">
+        {{#with curso}}
+        <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            <ul class="breadcrumb">
+              <li><a href="{{pathFor 'panel'}}">Inicio</a></li>
+              <li class="active">{{title}}</li>
+            </ul>
+            <h2>Curso: {{title}}</h2>
+            <p>{{description}}</p>
+        </div>
+        {{/with}}
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#foros" data-toggle="tab">Foros</a></li>
+                <li><a href="#material" data-toggle="tab">Material de Apoyo</a></li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade active in" id="foros">
+                    <h3>Crear un Foro</h3>
+                    {{#autoForm collection="Foros" id="insertForoForm" type="insert"}}
+                        {{> afQuickField name='cursoId' value=curso._id type='hidden'}}
+                        {{> afQuickField name='subject'}}
+                    <button type="submit" class="btn btn-warning">Discutir</button>
+                    {{/autoForm}}
+                    <hr>
+                    <h3>Foros de este curso</h3>
+                     {{#if foro.count}}
+                        <table class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th>Tema</th>
+                                <th>Detalles</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#each foro}}
+                                <tr class="animated fadeIn">
+                                    <td>{{subject}}</td>
+                                    <td>
+                                        <a href="{{pathFor 'foro'}}" class="btn btn-info">
+                                            Ir al Foro
+                                        </a>
+                                    </td>
+                                </tr>
+                            {{/each}}
+                            </tbody>
+                        </table>
+                    {{else}}
+                            <h4 class="text-muted text-center">-Sin Foros para este Curso--</h4>
+                    {{/if}}  
+                </div>
+                <div class="tab-pane fade" id="material">
+                    {{#with curso}}
+                    <h3>Material Inicial</h3>
+                        {{#each material attachments}}
+                         <p class="well">
+                            <a href="{{this.url}}" target="_blank">
+                                <i class="fa fa-file-o"></i> Archivo {{this.format}}
+                            </a>
+                        </p>
+                        {{/each}}
+                    {{/with}}
+                    <h4>Material Añadido Posteriormente</h4>
+                    {{#each materiales}}
+                        <blockquote>
+                        {{#each material attachments}}
+                        <p class="text-warning">{{../notes}}</p>
+                       <p class="well">
+                            <a href="{{this.url}}" target="_blank">
+                                <i class="fa fa-file-o"></i> Archivo {{this.format}}
+                            </a>
+                        </p>
+                        {{/each}}
+                        <small>Agregado <cite title="Source Title">{{livestamp createdAt}}</cite></small>
+                        </blockquote>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</template>

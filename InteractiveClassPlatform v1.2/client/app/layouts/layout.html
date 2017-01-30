@@ -1,0 +1,81 @@
+<head>
+<title>Interactive Class Platform</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="icon" type="image/png"  href="images/favicon.png" />
+<html xml:lang="es" xmlns="http://www.w3.org/1999/xhtml">
+</head>
+<template name="layout">
+<div id="page">
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{{pathFor 'docencia'}}">
+          <i class="glyphicon glyphicon-blackboard"></i> Interactive Class Platform
+      </a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+      {{#if currentUser}}
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#" onclick="Meteor.logout()"><i class="fa fa-sign-out"></i> Salir</a></li>
+      </ul>
+      <p class="navbar-text navbar-right">{{currentUser.profile.nombre}} {{currentUser.profile.apellido}}</p>
+        {{#unless isInRole 'admin'}}
+         <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> <span class="fa fa-flag"></span>
+              {{notificacionCounter}}
+               - Notificaciones <span class="caret"></span></a>
+              <ul class="dropdown-menu dropdown-aviso" role="menu">
+                  {{#each notificacion}}
+                  <li class="{{#unless seen}}notificacion-bg{{/unless}}">
+                      <a href="{{pathFor 'foroLink'}}" class="notificacion-link" data-notificacion-id="{{_id}}">
+                        {{#if seen}}<i class="fa fa-eye"></i>{{/if}} {{noticia}}
+                    </a>
+                  </li>           
+                  {{/each}}
+              </ul>
+            </li>
+         </ul>
+         {{/unless}}
+      {{else}}
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="{{pathFor 'ingresar'}}">Ingresar</a></li>
+      </ul>
+      {{/if}}
+    </div>
+  </div>
+</nav>
+    <div class="content">
+        <div class="container">
+            <div class="row">
+            {{#if formulario.pregunta}}
+                {{#with formulario}}
+                <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+                    <div class="animated fadeInLeft">
+                    <h1>Curso: {{curso.title}}</h1>
+                    <h2>{{cuestionario.title}}</h2>
+                    <p>{{cuestionario.description}}</p>
+                    <h3>{{pregunta.pregunta}}</h3>
+                    {{#autoForm collection="Respuestas" id="insertRespuestaForm" type="insert"}}
+                        {{> afQuickField name='preguntaId' value=pregunta._id type='hidden'}}
+                        {{> afQuickField name='respuesta'}}
+                    <button type="submit" class="btn btn-primary">Responder</button>
+                    {{/autoForm}}
+                    </div>
+                </div>
+                {{/with}}
+            {{else}}
+                {{> yield}}
+            {{/if}}
+            </div>
+        </div>
+    </div>
+</div>
+</template>

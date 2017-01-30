@@ -1,0 +1,93 @@
+<template name="foro">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            {{#each foro}}
+            <ul class="breadcrumb">
+              <li><a href="{{pathFor 'panel'}}">Inicio</a></li>
+              <li><a href="{{pathFor 'cursoBread'}}">curso</a></li>
+              <li class="active">{{subject}}</li>
+            </ul>
+            <h2>Tema: {{subject}}</h2>
+            <p class="small text-muted">Creado por {{creador}} - {{livestamp createdAt}}</p>
+            <p align="right">
+                {{#if meGusta}}
+                <div class="btn btn-info" title="Te gusta este tema" style="cursor:default">
+                    <b class="badge">{{likesTotal}}</b> <i class="fa fa-thumbs-o-up"></i> ¡Me gusta!
+                </div>                
+                {{else}}
+                <button class="btn btn-info btn-sm btn-like">
+                    {{#if likesTotal}}
+                        <span class="badge">{{likesTotal}}</span>
+                    {{/if}}
+                        <i class="fa fa-thumbs-o-up"></i> Me gusta
+                </button>
+                {{/if}}
+            </p>
+            {{/each}}
+            </div>
+        </div>
+        <hr>
+            <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#comentarios" data-toggle="tab">Comentarios</a></li>
+                <li><a href="#participaciones" data-toggle="tab">Participaciones</a></li>
+            </ul>
+            </div>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade active in" id="comentarios">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+                            <h3 class="text-center">Participa en el Foro</h3>
+                                {{#autoForm collection="Comentarios" id="insertComentarioForm" type="insert"}}
+                                    {{> afQuickField name='foroId' value=foroId type='hidden'}}
+                                    {{> afQuickField name='texto' rows=2 placeholder='Escribe un Comentario...'}}
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa fa-paper-plane-o"></i> Comentar
+                                </button>
+                                {{/autoForm}}                
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2 margin-top-20">
+                            {{#if comentario}}
+                                {{#each comentario}}
+                                    <blockquote class="animated fadeInDown">
+                                        <p>{{texto}}</p>
+                                        <small>{{usuario}} <cite title="Source Title">{{livestamp createdAt}}</cite></small>
+                                    </blockquote>                    
+                                {{/each}}
+                            {{else}}
+                            <h4>Sé el primero en Comentar</h4>
+                            {{/if}}
+                        </div>
+                    </div>                    
+                </div>
+                <div class="tab-pane fade" id="participaciones">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+                        {{#if participacion}}
+                        <h3 class="text-center">Participaciones en el Foro</h3>
+                        <table class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th>Participante</th>
+                                <th>Comentarios</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#each participacion}}
+                                <tr>
+                                    <td>{{user}}</td>
+                                    <td>{{eventos}}</td>
+                                </tr>
+                            {{/each}}
+                            </tbody>
+                        </table>
+                        {{else}}
+                            <h3 class="text-muted text-center">-Sin Participaciones en el Foro-</h3>
+                        {{/if}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</template>

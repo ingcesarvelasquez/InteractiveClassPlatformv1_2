@@ -1,0 +1,67 @@
+<template name="materiales">
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            {{#each curso}}
+            <ul class="breadcrumb">
+            <li><a href="{{pathFor 'docencia'}}">Inicio</a></li>
+              <li class="active">{{title}}</li>
+            </ul>
+            <div>
+            {{#autoForm collection="Materiales" id="insertMaterialForm" type="insert"}}
+            <fieldset>
+                <h3>Agregar Material al Curso: {{title}}</h3>
+                {{#if afFieldIsInvalid name='attachments'}}
+                <p class="text-danger">Se Requiere al menos un Archivo a adjuntar</p>
+                {{/if}}
+                
+                {{> afQuickField type='hidden' name='cursoId' value=_id}}
+                {{> afFieldInput name='attachments' type='hidden' value=attachmentsString}}
+                <p class="text-muted">
+                    <small>Solo se admiten archivos de imágenes y documentos en formato PDF</small>
+                </p>
+                {{#if uploading}}
+                    <p class="text-warning">
+                        Subiendo Material... <i class="fa fa-spin fa-spinner"></i>
+                    </p>
+                {{/if}}
+                <input type="file" class="add-attachment">
+                <div>
+                    {{#each attachment}}
+                    <p class="well">
+                        <a href="{{this.url}}" target="_blank">
+                            <i class="fa fa-file-o"></i> Archivo {{this.format}}
+                        </a>
+                    </p>
+                    {{/each}}
+                </div>
+                <p class="margin-top-20">
+                    {{> afQuickField name='notes' rows=2 placeholder='Notas o Comentarios'}}
+                </p>
+                <p align="right">
+                    <button type="submit" class="btn btn-primary">Publicar Material</button>
+                </p>
+            </fieldset>
+            {{/autoForm}}
+            </div>
+            {{/each}}
+        </div>
+        <hr>
+        <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+        {{#each material}}
+            <blockquote>
+            <p>{{notes}}</p>
+            {{#each materialString attachments}}
+           <p class="well">
+                <a href="{{this.url}}" target="_blank">
+                    <i class="fa fa-file-o"></i> Archivo {{this.format}}
+                </a>
+            </p>
+            {{/each}}
+            <small>Agregado <cite title="Source Title">{{livestamp createdAt}}</cite></small>
+            </blockquote>
+        {{/each}}
+        </div>
+    </div>
+</div>
+</template>

@@ -1,0 +1,133 @@
+<template name="docencia">
+{{> autoformModals}}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#cursos" data-toggle="tab">Cursos</a></li>
+                <li><a href="#cuestionarios" data-toggle="tab">Cuestionarios</a></li>
+                <li><a href="#preguntas" data-toggle="tab">Preguntas</a></li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade active in" id="cursos">
+                        {{#autoForm collection="Cursos" id="insertCursoForm" type="insert"}}
+                        <fieldset>
+                            <h3 class="text-center">Crear un Curso</h3>
+                            {{> afQuickField name='title'}}
+                            {{> afQuickField name='description' rows=2}}
+                            {{> afQuickField name='attachments' type='hidden' value=attachmentsString}}
+                            <p><b>Material de Apoyo</b></p>
+                            <p class="text-muted">
+                                <small>Solo se admiten archivos de imágenes y documentos en formato PDF</small>
+                            </p>
+                            {{#if uploading}}
+                                <p class="text-warning">
+                                    Subiendo Material... <i class="fa fa-spin fa-spinner"></i>
+                                </p>
+                            {{/if}}
+                            <input type="file" class="add-attachment">
+                            <div>
+                                {{#each attachment}}
+                                <p class="well">
+                                    <a href="{{this.url}}" target="_blank">
+                                        <i class="fa fa-file-o"></i> Archivo {{this.format}}
+                                    </a>
+                                </p>
+                                {{/each}}
+                            </div>
+                            <p align="right">
+                                <button type="submit" class="btn btn-primary">Crear Curso</button>
+                            </p>
+                        </fieldset>
+                        {{/autoForm}}
+                    <hr>
+                        {{#if curso}}
+                        <h3 class="text-center">Cursos Disponibles</h3>
+                        <table class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th>Título </th>
+                                <th>Descripción</th>
+                                <th>Matriculados</th>
+                                <th>Acción</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#each curso}}
+                                <tr class="animated fadeIn">
+                                    <td><a href="{{pathFor 'curso'}}">{{title}}</a></td>
+                                    <td>{{fancyText description}}</td>
+                                    <td class="text-center">{{matriculas}}</td>
+                                    <td>
+                                        <div class="btn-group-vertical">
+                                         {{#afModal class="btn btn-default" collection="Cursos" operation="update" doc=_id  buttonContent="Guardar" omitFields="docenteId,matriculados,attachments,createdAt"}}
+                                        Editar
+                                        {{/afModal}}
+                                        <a href="{{pathFor 'materiales'}}" class="btn btn-warning">
+                                            <i class="fa fa-plus"></i> <i class="fa fa-paperclip"></i>
+                                        </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {{/each}}
+                            </tbody>
+                        </table>
+                        {{else}}
+                            <h3 class="text-muted text-center">-Sin Cursos para Listar--</h3>
+                        {{/if}}
+                </div>
+                <div class="tab-pane fade" id="cuestionarios">
+                    <h3 class="text-center">Crear Cuestionario para un Curso</h3>
+                    {{> quickForm collection="Cuestionarios" id="insertCuestionarioForm" type="insert" buttonContent="Crear Cuestionario" buttonClasses="btn btn-success" omitFields="createdAt,createdBy,sent"}}
+                    
+                        {{#if cuestionario}}
+                        <h3 class="text-center">Cuestionarios Creados</h3>
+                        <table class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th>Nombre </th>
+                                <th>Descripción</th>
+                                <th>Preguntas</th>
+                                <th>Acción</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#each cuestionario}}
+                                <tr class="animated fadeIn">
+                                    <td><a href="{{pathFor 'cuestionario'}}">{{title}}</a></td>
+                                    <td>{{fancyText description}}</td>
+                                    {{#if numPreguntas}}
+                                    <td class="text-center">
+                                        <a href="{{pathFor 'cuestionario'}}">{{numPreguntas}}</a>
+                                    </td>
+                                    {{else}}
+                                    <td class="text-center">{{numPreguntas}}</td>
+                                    {{/if}}
+                                    <td>
+                                        {{#if numPreguntas}}
+                                            {{#if sent}}
+                                            Enviado
+                                            {{else}}
+                                            <button title="editar" class="btn btn-success btn-enviar-cuestionario" data-cuestionario-id="{{_id}}">Enviar</button>
+                                            {{/if}}
+                                        {{else}}
+                                            <span class="text-danger">Requiere Preguntas</span>
+                                        {{/if}}
+                                    </td>
+                                </tr>
+                            {{/each}}
+                            </tbody>
+                        </table>
+                        {{else}}
+                            <h3 class="text-muted text-center">-Sin Cuestionarios para Listar--</h3>
+                        {{/if}}
+                </div>
+                <div class="tab-pane fade" id="preguntas">
+                    <h3 class="text-center">Crear Preguntas para un Cuestionario</h3>
+                    {{> quickForm collection="Preguntas" id="insertPreguntaForm" type="insert" buttonContent="Crear Pregunta" buttonClasses="btn btn-success" omitFields="createdAt,hanRespondido,enviar,respondieron1,respondieron2,respondieron3,respondieron4,respondieronBien,respondieronMal"}}                
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</template>
